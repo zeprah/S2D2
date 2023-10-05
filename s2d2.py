@@ -64,6 +64,7 @@ class StableDiffusionImageGenerator:
         clip_layers = self.pipe.text_encoder.text_model.encoder.layers
         clip_layers_i2i = self.pipe_i2i.text_encoder.text_model.encoder.layers
         if clip_skip > 0:
+          print("applying clip skip")
           self.pipe.text_encoder.text_model.encoder.layers = clip_layers[:-clip_skip]
           self.pipe_i2i.text_encoder.text_model.encoder.layers = clip_layers_i2i[:-clip_skip]
 
