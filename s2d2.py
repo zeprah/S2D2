@@ -47,7 +47,7 @@ class StableDiffusionImageGenerator:
     def __init__(
             self,
             sd_safetensor_path: str,
-            clip_skip: int=1
+            clip_skip: int=1,
             device: str="cuda",
             dtype: torch.dtype=torch.float16,
             ):
