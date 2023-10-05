@@ -77,10 +77,21 @@ class StableDiffusionImageGenerator:
         return
     
     
-    def load_lora(self, safetensor_path, alpha=0.75):
+    def load_lora(self, path, name, alpha=1):
+        self.pipe.load_lora_weights(path, weight_name=name)
+        self.pipe.fuse_lora(lora_scale=alpha)
+        self.pipe_i2i.load_lora_weights(path, weight_name=name)
+        self.pipe_i2i.fuse_lora(lora_scale=alpha)
+        '''
         self.pipe = load_safetensors_lora(self.pipe, safetensor_path, alpha=alpha, device=self.device)
         self.pipe_i2i = load_safetensors_lora(self.pipe_i2i, safetensor_path, alpha=alpha, device=self.device)
+        '''
 
+    def unload_lora(self):
+        self.pipe.unfuse_lora()
+        self.pipe_i2i.unfuse_lora()
+        self.pipe.unload_lora_weights()
+        self.pipe_i2i.unload_lora_weights()
 
     def decode_latents_to_PIL_image(self, latents, decode_factor=0.18215):
         with torch.no_grad():
