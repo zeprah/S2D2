@@ -3,7 +3,7 @@ import random
 import datetime
 import torch
 from PIL import Image
-
+import transformers
 import diffusers
 from diffusers import (StableDiffusionPipeline, 
                        StableDiffusionImg2ImgPipeline)
@@ -47,14 +47,27 @@ class StableDiffusionImageGenerator:
     def __init__(
             self,
             sd_safetensor_path: str,
+            clip_skip: int=1
             device: str="cuda",
             dtype: torch.dtype=torch.float16,
             ):
         self.device = torch.device(device)
-        self.pipe = StableDiffusionPipeline.from_ckpt(
+        if clip_skip > 1:
+            text_encoder = transformers.CLIPTextModel.from_pretrained(
+                sd_safetensor_path,
+                subfolder = "text_encoder",
+                num_hidden_layers = 12 - (clip_skip - 1),
+                torch_dtype = dtype
+            )
+          self.pipe = StableDiffusionPipeline.from_ckpt(
             sd_safetensor_path,
             torch_dtype=dtype,
-        ).to(device)
+          ).to(device)
+        else:
+          self.pipe = StableDiffusionPipeline.from_ckpt(
+              sd_safetensor_path,
+              torch_dtype=dtype,
+          ).to(device)
         self.pipe_i2i = StableDiffusionImg2ImgPipeline.from_ckpt(
             sd_safetensor_path,
             torch_dtype=dtype,
