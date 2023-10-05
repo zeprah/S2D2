@@ -64,15 +64,20 @@ class StableDiffusionImageGenerator:
             torch_dtype=dtype,
             text_encoder = text_encoder
           ).to(device)
+          self.pipe_i2i = StableDiffusionImg2ImgPipeline.from_ckpt(
+              sd_safetensor_path,
+              torch_dtype=dtype,
+              text_encoder = text_encoder
+          ).to(device)
         else:
           self.pipe = StableDiffusionPipeline.from_ckpt(
               sd_safetensor_path,
               torch_dtype=dtype,
           ).to(device)
-        self.pipe_i2i = StableDiffusionImg2ImgPipeline.from_ckpt(
-            sd_safetensor_path,
-            torch_dtype=dtype,
-        ).to(device)
+          self.pipe_i2i = StableDiffusionImg2ImgPipeline.from_ckpt(
+              sd_safetensor_path,
+              torch_dtype=dtype,
+          ).to(device)
         self.pipe.enable_xformers_memory_efficient_attention()
         self.pipe.enable_attention_slicing()
         self.pipe_i2i.enable_xformers_memory_efficient_attention()
