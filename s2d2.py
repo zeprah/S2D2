@@ -62,6 +62,7 @@ class StableDiffusionImageGenerator:
           self.pipe = StableDiffusionPipeline.from_ckpt(
             sd_safetensor_path,
             torch_dtype=dtype,
+            text_encoder = text_encoder
           ).to(device)
         else:
           self.pipe = StableDiffusionPipeline.from_ckpt(
